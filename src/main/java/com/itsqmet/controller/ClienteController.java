@@ -1,11 +1,9 @@
 package com.itsqmet.controller;
 
-import com.itsqmet.entity.Citas;
-import com.itsqmet.entity.Cliente;
-import com.itsqmet.entity.Profesional;
-import com.itsqmet.entity.Servicio;
+import com.itsqmet.entity.*;
 import com.itsqmet.service.ClienteServicio;
 import com.itsqmet.service.ProfesionalServicio;
+import com.itsqmet.service.RolServicio;
 import com.itsqmet.service.ServicioServicio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -25,7 +24,8 @@ public class ClienteController {
     private ProfesionalServicio profesionalServicio;
     @Autowired
     private ServicioServicio servicioServicio;
-
+    @Autowired
+    private RolServicio rolServicio;
     @GetMapping("/listaClientes")
     public String listaClientes(Model model) {
         model.addAttribute("clientes", clienteServicio.obtenerTodosLosClientes());
@@ -34,10 +34,12 @@ public class ClienteController {
 
     @GetMapping("/registroCliente")
     public String mostrarFormularioRegistroCliente(Model model) {
+        List<Rol> roles = rolServicio.mostrarRol();
+        System.out.println("Roles encontrados: " + roles); // Verifica que no esté vacío
         model.addAttribute("cliente", new Cliente());
+        model.addAttribute("roles", roles);
         return "pages/registroCliente";
     }
-
     @PostMapping("/registroCliente")
     public String registrarCliente(@Valid @ModelAttribute("cliente") Cliente cliente,
                                    BindingResult result,

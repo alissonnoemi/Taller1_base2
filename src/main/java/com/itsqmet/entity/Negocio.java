@@ -23,7 +23,7 @@ public class Negocio {
     @Column(unique = true)
     @NotBlank(message = "El email profesional es obligatorio")
     @Email(message = "Debe ingresar un email válido")
-    private String emailProfesional;
+    private String email;
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
@@ -42,6 +42,17 @@ public class Negocio {
     private List<Profesional> profesionales;
     @OneToMany(mappedBy = "negocio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Servicio> servicios;
+    @ManyToOne
+    @JoinColumn(name = "rol_id")
+    private Rol rol;
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
 
     public Long getIdNegocio() {
         return idNegocio;
@@ -59,12 +70,12 @@ public class Negocio {
         this.nombreCompleto = nombreCompleto;
     }
 
-    public String getEmailProfesional() {
-        return emailProfesional;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailProfesional(String emailProfesional) {
-        this.emailProfesional = emailProfesional;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

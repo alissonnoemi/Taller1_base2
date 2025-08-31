@@ -6,6 +6,7 @@ import com.itsqmet.entity.Servicio;
 import com.itsqmet.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,78 +15,35 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
 public class CitasController {
 
-    @Autowired
-    private CitasServicio citasServicio;
-    @Autowired
-    private ClienteServicio clienteServicio;
-    @Autowired
-    private ProfesionalServicio profesionalServicio;
-    @Autowired
-    private ServicioServicio servicioServicio;
-    @Autowired
-    private NegocioServicio negocioServicio;
+    @Autowired private CitasServicio citasServicio;
+    @Autowired private ClienteServicio clienteServicio;
+    @Autowired private ProfesionalServicio profesionalServicio;
+    @Autowired private ServicioServicio servicioServicio;
+    @Autowired private NegocioServicio negocioServicio;
 
+    // ===================== VIEWS =====================
     @GetMapping("/listaCita")
     public String mostrarListaCitas(Model model) {
         model.addAttribute("citas", citasServicio.obtenerTodosLosCitas());
-        return "pages/listaCita";
+        return "pages/listaCita"; // Admin view
     }
 
     @GetMapping("/agendar")
     public String mostrarFormularioAgendar(Model model) {
         Citas cita = new Citas();
-        cita.setDuracionServicioHoras(0L); // Establece la duración inicial a 0
+        cita.setDuracionServicioHoras(0L);
         model.addAttribute("cita", cita);
         model.addAttribute("clientes", clienteServicio.obtenerTodosLosClientes());
-        model.addAttribute("negocios", negocioServicio.obtenerTodosLosNegocios()); // <-- Esta línea es correcta
+        model.addAttribute("negocios", negocioServicio.obtenerTodosLosNegocios());
         model.addAttribute("profesionales", Collections.emptyList());
         model.addAttribute("servicios", Collections.emptyList());
         return "pages/cita";
-    }
-
-    @PostMapping("/agendar")
-    public String agendarCita(@Valid @ModelAttribute("cita") Citas cita,
-                              BindingResult result,
-                              RedirectAttributes redirectAttributes,
-                              Model model) {
-        // Método auxiliar para añadir atributos comunes en caso de error
-        Runnable addCommonModelAttributes = () -> {
-            model.addAttribute("clientes", clienteServicio.obtenerTodosLosClientes());
-            model.addAttribute("negocios", negocioServicio.obtenerTodosLosNegocios());
-            if (cita.getNegocio() != null && cita.getNegocio().getIdNegocio() != null) {
-                model.addAttribute("profesionales", profesionalServicio.obtenerProfesionalesPorNegocio(cita.getNegocio().getIdNegocio()));
-                model.addAttribute("servicios", servicioServicio.obtenerServiciosPorNegocio(cita.getNegocio().getIdNegocio()));
-            } else {
-                model.addAttribute("profesionales", Collections.emptyList());
-                model.addAttribute("servicios", Collections.emptyList());
-            }
-        };
-
-        if (result.hasErrors()) {
-            addCommonModelAttributes.run();
-            return "pages/cita"; // Permanece en la página del formulario
-        }
-        try {
-            citasServicio.agendarNuevaCita(cita);
-            redirectAttributes.addFlashAttribute("mensajeTipo", "success");
-            redirectAttributes.addFlashAttribute("mensajeCuerpo", "Cita agendada exitosamente!");
-            return "redirect:/listaCita"; // Redirige en caso de éxito
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("mensajeTipo", "error"); // Añade al modelo para mostrar en la página actual
-            model.addAttribute("mensajeCuerpo", e.getMessage());
-            addCommonModelAttributes.run();
-            return "pages/cita"; // Permanece en la página del formulario
-        } catch (Exception e) {
-            model.addAttribute("mensajeTipo", "error"); // Añade al modelo para mostrar en la página actual
-            model.addAttribute("mensajeCuerpo", "Error al agendar la cita: " + e.getMessage());
-            addCommonModelAttributes.run();
-            return "pages/cita"; // Permanece en la página del formulario
-        }
     }
 
     @GetMapping("/editarCita/{id}")
@@ -96,27 +54,24 @@ public class CitasController {
             model.addAttribute("cita", cita);
             model.addAttribute("clientes", clienteServicio.obtenerTodosLosClientes());
             model.addAttribute("negocios", negocioServicio.obtenerTodosLosNegocios());
-            // Si la cita tiene un negocio asociado, los profesionales y servicios serán precargados por JavaScript.
-            // No es necesario poblarlos aquí directamente.
-            model.addAttribute("profesionales", Collections.emptyList()); // Será llenado por JS
-            model.addAttribute("servicios", Collections.emptyList());     // Será llenado por JS
+            model.addAttribute("profesionales", Collections.emptyList());
+            model.addAttribute("servicios", Collections.emptyList());
             return "pages/cita";
         } else {
-            // Usando RedirectAttributes para un mensaje en la redirección
             model.addAttribute("mensajeTipo", "error");
             model.addAttribute("mensajeCuerpo", "Cita no encontrada para edición.");
             return "redirect:/listaCita";
         }
     }
 
-    @PostMapping("/editarCita/{id}")
-    public String actualizarCita(@PathVariable("id") Long id,
-                                 @Valid @ModelAttribute("cita") Citas cita,
-                                 BindingResult result,
-                                 RedirectAttributes redirectAttributes,
-                                 Model model) {
-        // Método auxiliar para añadir atributos comunes en caso de error
-        Runnable addCommonModelAttributes = () -> {
+    // ===================== CRUD =====================
+    @PostMapping({"/agendar", "/editarCita/{id}"})
+    public String guardarOCambiarCita(@PathVariable(required = false) Long id,
+                                      @Valid @ModelAttribute("cita") Citas cita,
+                                      BindingResult result,
+                                      RedirectAttributes redirectAttributes,
+                                      Model model) {
+        Runnable addCommonAttributes = () -> {
             model.addAttribute("clientes", clienteServicio.obtenerTodosLosClientes());
             model.addAttribute("negocios", negocioServicio.obtenerTodosLosNegocios());
             if (cita.getNegocio() != null && cita.getNegocio().getIdNegocio() != null) {
@@ -129,52 +84,82 @@ public class CitasController {
         };
 
         if (result.hasErrors()) {
-            addCommonModelAttributes.run();
-            return "pages/cita"; // Permanece en la página del formulario
+            addCommonAttributes.run();
+            return "pages/cita";
         }
+
         try {
-            cita.setIdCita(id); // Asegura que el ID esté configurado para la actualización
-            citasServicio.actualizarCita(cita.getIdCita(), cita);
+            if (id != null) cita.setIdCita(id);
+            citasServicio.guardarOCambiarCita(cita);
             redirectAttributes.addFlashAttribute("mensajeTipo", "success");
-            redirectAttributes.addFlashAttribute("mensajeCuerpo", "Cita actualizada exitosamente!");
-            return "redirect:/listaCita"; // Redirige en caso de éxito
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("mensajeTipo", "error"); // Añade al modelo para mostrar en la página actual
-            model.addAttribute("mensajeCuerpo", e.getMessage());
-            addCommonModelAttributes.run();
-            return "pages/cita"; // Permanece en la página del formulario
+            redirectAttributes.addFlashAttribute("mensajeCuerpo", id != null ? "Cita actualizada exitosamente!" : "Cita agendada exitosamente!");
+            return "redirect:/listaCita";
         } catch (Exception e) {
-            model.addAttribute("mensajeTipo", "error"); // Añade al modelo para mostrar en la página actual
-            model.addAttribute("mensajeCuerpo", "Error al actualizar la cita: " + e.getMessage());
-            addCommonModelAttributes.run();
-            return "pages/cita"; // Permanece en la página del formulario
+            model.addAttribute("mensajeTipo", "error");
+            model.addAttribute("mensajeCuerpo", e.getMessage());
+            addCommonAttributes.run();
+            return "pages/cita";
         }
     }
 
     @GetMapping("/eliminarCita/{id}")
-    public String eliminarCita(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    public String eliminarCita(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             citasServicio.eliminarCita(id);
             redirectAttributes.addFlashAttribute("mensajeTipo", "success");
             redirectAttributes.addFlashAttribute("mensajeCuerpo", "Cita eliminada exitosamente!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensajeTipo", "error");
-            redirectAttributes.addFlashAttribute("mensajeCuerpo", "Error al eliminar la cita: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("mensajeCuerpo", e.getMessage());
         }
         return "redirect:/listaCita";
     }
-
-    // Nuevos endpoints para cargar profesionales y servicios por negocio (API REST)
-    @GetMapping("/api/profesionales/porNegocio/{negocioId}")
+    @GetMapping("/pages/profesionales/porNegocio/{negocioId}")
     @ResponseBody
-    public List<Profesional> getProfesionalesPorNegocio(@PathVariable("negocioId") Long negocioId) {
+    public List<Profesional> getProfesionalesPorNegocio(@PathVariable Long negocioId) {
         return profesionalServicio.obtenerProfesionalesPorNegocio(negocioId);
     }
 
     @GetMapping("/api/servicios/porNegocio/{negocioId}")
     @ResponseBody
-    public List<Servicio> getServiciosPorNegocio(@PathVariable("negocioId") Long negocioId) {
+    public List<Servicio> getServiciosPorNegocio(@PathVariable Long negocioId) {
         return servicioServicio.obtenerServiciosPorNegocio(negocioId);
     }
 
+    // Devuelve todas las citas para admin
+    @GetMapping("/pages/admin")
+    @ResponseBody
+    public List<Citas> getCitasAdmin() {
+        return citasServicio.obtenerTodosLosCitas();
+    }
+
+    // Devuelve solo citas de un cliente
+    @GetMapping("/pages/cliente/{clienteId}")
+    @ResponseBody
+    public List<Citas> getCitasCliente(@PathVariable Long clienteId) {
+        return citasServicio.obtenerCitasPorCliente(clienteId);
+    }
+
+    // Cancelar cita (cliente)
+    @PutMapping("/pages/{citaId}/cancelar")
+    @ResponseBody
+    public ResponseEntity<?> cancelarCita(@PathVariable Long citaId) {
+        citasServicio.cancelarCita(citaId); // solo cambia estado a CANCELADA
+        return ResponseEntity.ok().build();
+    }
+
+    // Actualizar fechas (drag & drop) – solo admin
+    @PutMapping("/pages/{citaId}/actualizar-fecha")
+    public ResponseEntity<?> actualizarFecha(@PathVariable Long citaId, @RequestBody Map<String,String> fechas) {
+        try {
+            citasServicio.actualizarFechas(
+                    citaId,
+                    fechas.get("fechaHoraInicio"),
+                    fechas.get("fechaHoraFin")
+            );
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al actualizar la cita: " + e.getMessage());
+        }
+    }
 }

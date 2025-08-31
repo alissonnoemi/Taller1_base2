@@ -33,6 +33,17 @@ public class Cliente {
     private String telefono;
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Citas> citas;
+    @ManyToOne
+    @JoinColumn(name = "rol_id")
+    private Rol rol;
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
 
     public Long getId() {
         return id;

@@ -63,6 +63,9 @@
     <a th:href="@{/}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block">Volver al Inicio</a>
     <a th:href="@{/listaProfesionales}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Ir a Profesionales</a>
     <a th:href="@{/listaServicios}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition">Ir a Servicios</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit" class="btn-volver py-2 px-6 text-lg shadow inline-block">Cerrar sesión</button>
+    </form>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>

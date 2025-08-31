@@ -2,269 +2,117 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <title>Agendar Cita</title>
-    <style>
-        /* Mantén tus estilos CSS aquí */
-        .form-label {
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        .form-select, .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
-            font-size: 1rem;
-            margin-top: 0.25rem;
-            margin-bottom: 0.5rem;
-            transition: border-color 0.2s;
-        }
-        .form-select:focus, .form-input:focus {
-            border-color: #6366f1;
-            outline: none;
-            background: #fff;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        .form-error {
-            color: #dc2626;
-            font-size: 0.95rem;
-            margin-top: 0.25rem;
-        }
-        .form-container {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e0e7ff 100%);
-            box-shadow: 0 8px 32px 0 rgba(31, 41, 55, 0.15);
-            border-radius: 1.25rem;
-            padding: 2.5rem 2rem;
-        }
-        .form-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #312e81;
-            margin-bottom: 0.5rem;
-            letter-spacing: -1px;
-        }
-        .form-subtitle {
-            color: #6366f1;
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-        .form-btn {
-            background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%);
-            color: #fff;
-            font-weight: 700;
-            padding: 0.75rem 2.5rem;
-            border-radius: 0.75rem;
-            font-size: 1.1rem;
-            box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.15);
-            transition: background 0.2s, transform 0.2s;
-        }
-        .form-btn:hover {
-            background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%);
-            transform: translateY(-2px) scale(1.03);
-        }
-        .flash-message {
-            animation: fadeInDown 0.7s;
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-    </style>
+    <title>Agendar / Editar Cita</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet"/>
 </head>
-<body class="bg-gradient-to-br from-indigo-100 via-blue-50 to-white min-h-screen font-sans leading-normal tracking-normal">
+<body class="bg-gradient-to-br from-indigo-100 via-blue-50 to-white min-h-screen font-sans">
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div th:if="${mensajeTipo}" th:classappend="${mensajeTipo == 'success' ? 'bg-green-600' : 'bg-red-600'}"
-     class="flash-message fixed top-4 right-4 z-50 p-4 rounded-lg text-white font-bold shadow-lg flash-message-animation">
-    <p th:text="${mensajeCuerpo}"></p>
-</div>
-<div class="bg-gradient-to-r from-blue-700 to-indigo-600 py-12 mb-10 shadow-lg rounded-b-3xl">
-    <div class="container mx-auto px-4 text-center">
-        <h1 class="form-title animate__animated animate__fadeInDown">
-            <i class="fas fa-calendar-alt mr-4 opacity-75"></i>Agendar Nueva Cita
-        </h1>
-        <p class="form-subtitle animate__animated animate__fadeInUp">Completa los detalles para reservar tu próximo servicio.</p>
-    </div>
-</div>
+<div class="container mx-auto form-container mb-10 max-w-2xl mt-10 p-6 bg-white rounded-xl shadow">
+    <h1 class="text-3xl font-bold mb-4 text-indigo-700 text-center" th:text="${cita.idCita != null ? 'Editar Cita' : 'Agendar Cita'}"></h1>
 
-<div class="container mx-auto form-container mb-10 max-w-2xl fade-in">
-    <form th:action="${cita.idCita != null ? '/editarCita/' + cita.idCita : '/agendar'}" method="post" th:object="${cita}" class="space-y-6">
+    <form th:action="${cita.idCita != null ? '/editarCita/' + cita.idCita : '/agendar'}" method="post" th:object="${cita}" class="space-y-4">
         <input type="hidden" th:field="*{idCita}" />
 
-        <div class="form-group">
-            <label for="cliente" class="form-label">Cliente:</label>
-            <select id="cliente" th:field="*{cliente.id}" class="form-select">
+        <div>
+            <label class="block font-semibold">Cliente:</label>
+            <select th:field="*{cliente.id}" class="w-full border rounded p-2">
                 <option value="">-- Selecciona un cliente --</option>
                 <option th:each="cli : ${clientes}" th:value="${cli.id}" th:text="${cli.nombreCompleto}"></option>
             </select>
-            <span th:if="${#fields.hasErrors('cliente')}" th:errors="*{cliente}" class="form-error"></span>
         </div>
 
-        <div class="form-group">
-            <label for="negocio" class="form-label">Negocio:</label>
-            <select id="negocio" th:field="*{negocio.idNegocio}" class="form-select" onchange="cargarProfesionalesYServicios()">
+        <div>
+            <label class="block font-semibold">Negocio:</label>
+            <select th:field="*{negocio.idNegocio}" class="w-full border rounded p-2" onchange="cargarProfesionalesYServicios()">
                 <option value="">-- Selecciona un negocio --</option>
-                <option th:each="neg : ${negocios}"
-                        th:value="${neg.idNegocio}"
-                        th:text="${neg.nombreNegocio}"
-                        th:selected="${cita.negocio != null and cita.negocio.idNegocio == neg.idNegocio}"></option>
+                <option th:each="neg : ${negocios}" th:value="${neg.idNegocio}" th:text="${neg.nombreNegocio}"></option>
             </select>
-            <span th:if="${#fields.hasErrors('negocio')}" th:errors="*{negocio}" class="form-error"></span>
         </div>
 
-        <div class="form-group">
-            <label for="servicio" class="form-label">Servicio:</label>
-            <select id="servicio" th:field="*{servicio.idServicio}" class="form-select" onchange="actualizarDuracionServicio()">
+        <div>
+            <label class="block font-semibold">Servicio:</label>
+            <select id="servicio" th:field="*{servicio.idServicio}" class="w-full border rounded p-2" onchange="actualizarDuracionServicio()">
                 <option value="">-- Selecciona un servicio --</option>
             </select>
-            <span th:if="${#fields.hasErrors('servicio')}" th:errors="*{servicio}" class="form-error"></span>
         </div>
 
-        <div class="form-group">
-            <label for="duracionServicioHoras" class="form-label">Duración:</label>
-            <input type="number" id="duracionServicioHoras" th:field="*{duracionServicioHoras}" min="1" class="form-input" readonly />
-            <span th:if="${#fields.hasErrors('duracionServicioHoras')}" th:errors="*{duracionServicioHoras}" class="form-error"></span>
+        <div>
+            <label class="block font-semibold">Duración (minutos):</label>
+            <input type="number" id="duracionServicioHoras" th:field="*{duracionServicioHoras}" readonly class="w-full border rounded p-2" />
         </div>
 
-        <div class="form-group">
-            <label for="profesional" class="form-label">Profesional:</label>
-            <select id="profesional" th:field="*{profesional.idProfesional}" class="form-select">
+        <div>
+            <label class="block font-semibold">Profesional:</label>
+            <select id="profesional" th:field="*{profesional.idProfesional}" class="w-full border rounded p-2">
                 <option value="">-- Selecciona un profesional --</option>
             </select>
-            <span th:if="${#fields.hasErrors('profesional')}" th:errors="*{profesional}" class="form-error"></span>
         </div>
 
-        <div class="form-group">
-            <label for="fechaHoraInicio" class="form-label">Fecha y hora de inicio:</label>
-            <input type="datetime-local" id="fechaHoraInicio" th:field="*{fechaHoraInicio}" class="form-input" />
-            <span th:if="${#fields.hasErrors('fechaHoraInicio')}" th:errors="*{fechaHoraInicio}" class="form-error"></span>
+        <div>
+            <label class="block font-semibold">Fecha y Hora Inicio:</label>
+            <input type="datetime-local" th:field="*{fechaHoraInicio}" class="w-full border rounded p-2" />
         </div>
 
-        <div class="form-group">
-            <label for="fechaHoraFin" class="form-label">Fecha y hora de fin:</label>
-            <input type="datetime-local" id="fechaHoraFin" th:field="*{fechaHoraFin}" class="form-input"  />
-            <span th:if="${#fields.hasErrors('fechaHoraFin')}" th:errors="*{fechaHoraFin}" class="form-error"></span>
+        <div>
+            <label class="block font-semibold">Fecha y Hora Fin:</label>
+            <input type="datetime-local" th:field="*{fechaHoraFin}" class="w-full border rounded p-2" />
         </div>
 
-        <div class="form-group">
-            <label for="estadoCita" class="form-label">Estado de la cita:</label>
-            <select id="estadoCita" th:field="*{estadoCita}" class="form-select">
+        <div>
+            <label class="block font-semibold">Estado:</label>
+            <select th:field="*{estadoCita}" class="w-full border rounded p-2">
                 <option value="">-- Selecciona un estado --</option>
-                <option th:each="estado : ${T(com.itsqmet.entity.Citas.EstadoCita).values()}"
-                        th:value="${estado}"
-                        th:text="${estado}"
-                        th:selected="${cita.estadoCita != null and cita.estadoCita == estado}"></option>
+                <option th:each="estado : ${T(com.itsqmet.entity.Citas.EstadoCita).values()}" th:value="${estado}" th:text="${estado}"></option>
             </select>
-            <span th:if="${#fields.hasErrors('estadoCita')}" th:errors="*{estadoCita}" class="form-error"></span>
         </div>
 
-        <div class="text-center mt-8">
-            <button type="submit" class="form-btn" th:text="${cita.idCita != null ? 'Actualizar Cita' : 'Agendar Cita'}"></button>
+        <div class="text-center mt-4">
+            <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded hover:bg-indigo-500">
+                <span th:text="${cita.idCita != null ? 'Actualizar Cita' : 'Agendar Cita'}"></span>
+            </button>
         </div>
     </form>
 </div>
 
 <script>
     function actualizarDuracionServicio() {
-      var selectServicio = document.getElementById('servicio');
-      var inputDuracion = document.getElementById('duracionServicioHoras');
+        const select = document.getElementById('servicio');
+        const input = document.getElementById('duracionServicioHoras');
+        const selected = select.options[select.selectedIndex];
+        input.value = selected.getAttribute('data-duracion') || '';
+    }
 
-      if (selectServicio.selectedIndex > 0) {
-          var selectedOption = selectServicio.options[selectServicio.selectedIndex];
-          if (selectedOption.hasAttribute('data-duracion')) {
-              inputDuracion.value = selectedOption.getAttribute('data-duracion');
-          } else {
-              inputDuracion.value = '';
-          }
-      } else {
-          inputDuracion.value = '';
-      }
-  }
+    function cargarProfesionalesYServicios() {
+        const negocioId = document.querySelector('[th\\:field="*{negocio.idNegocio}"]').value;
+        const profSelect = document.getElementById('profesional');
+        const servSelect = document.getElementById('servicio');
 
-  function cargarProfesionalesYServicios() {
-      var negocioId = document.getElementById('negocio').value;
-      var profesionalSelect = document.getElementById('profesional');
-      var servicioSelect = document.getElementById('servicio');
+        profSelect.innerHTML = '<option value="">-- Selecciona un profesional --</option>';
+        servSelect.innerHTML = '<option value="">-- Selecciona un servicio --</option>';
 
-      const profesionalGuardadoId = '[[${cita.profesional != null ? cita.profesional.idProfesional : ''}]]';
-      const servicioGuardadoId = '[[${cita.servicio != null ? cita.servicio.idServicio : ''}]]';
-
-      profesionalSelect.innerHTML = '<option value="">-- Selecciona un profesional --</option>';
-      servicioSelect.innerHTML = '<option value="">-- Selecciona un servicio --</option>';
-      document.getElementById('duracionServicioHoras').value = '';
-
-      if (negocioId) {
-          fetch('/api/profesionales/porNegocio/' + negocioId)
-              .then(response => response.json())
-              .then(data => {
-                  data.forEach(profesional => {
-                      let option = document.createElement('option');
-                      option.value = profesional.idProfesional;
-                      option.textContent = profesional.nombreCompleto;
-                      profesionalSelect.appendChild(option);
-                  });
-                  if (profesionalGuardadoId) {
-                      profesionalSelect.value = profesionalGuardadoId;
-                  }
-              });
-
-          fetch('/api/servicios/porNegocio/' + negocioId)
-              .then(response => response.json())
-              .then(data => {
-                  data.forEach(servicio => {
-                      let option = document.createElement('option');
-                      option.value = servicio.idServicio;
-                      option.textContent = servicio.nombre;
-                      // Usa la propiedad correcta según tu DTO/entidad
-                      option.setAttribute('data-duracion', servicio.duracionHoras);
-                      servicioSelect.appendChild(option);
-                  });
-                  if (servicioGuardadoId) {
-                      servicioSelect.value = servicioGuardadoId;
-                      actualizarDuracionServicio();
-                  }
-              });
-      }
-  }
-
-      document.addEventListener('DOMContentLoaded', function() {
-          // Si está en modo edición, el select de negocio podría ya tener un valor de Thymeleaf.
-          // Si es así, carga los profesionales y servicios para ese negocio.
-          const initialNegocioId = document.getElementById('negocio').value;
-          if (initialNegocioId) {
-              cargarProfesionalesYServicios();
-          } else {
-              // Para nuevas citas, asegúrate de que la duración sea inicialmente 0 (o vacía, según tu campo de entrada)
-              document.getElementById('duracionServicioMinutos').value = '';
-          }
-
-          // Inicializa AOS si lo estás usando
-          if (typeof AOS !== 'undefined') {
-              AOS.init();
-          }
-
-          // Limpieza de la animación de mensajes flash
-          const flashMessages = document.querySelectorAll('.flash-message');
-          flashMessages.forEach(msg => {
-              msg.addEventListener('animationend', () => {
-                  msg.remove();
-              });
-              // Opcional: Establece un tiempo de espera para eliminar los mensajes incluso si la animación no se está escuchando estrictamente, para mayor robustez
-              setTimeout(() => {
-                  msg.remove();
-              }, 5000); // Eliminar después de 5 segundos
-          });
-      });
+        if(negocioId){
+            fetch(`/api/profesionales/porNegocio/${negocioId}`)
+                .then(res => res.json())
+                .then(data => data.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.idProfesional;
+                    opt.textContent = p.nombreCompleto;
+                    profSelect.appendChild(opt);
+                }));
+            fetch(`/api/servicios/porNegocio/${negocioId}`)
+                .then(res => res.json())
+                .then(data => data.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.idServicio;
+                    opt.textContent = s.nombre;
+                    opt.setAttribute('data-duracion', s.duracionHoras);
+                    servSelect.appendChild(opt);
+                }));
+        }
+    }
 </script>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

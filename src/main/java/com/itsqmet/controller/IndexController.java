@@ -56,8 +56,5 @@ public class IndexController {
     public String mostrarAgradecimiento() {
         return "/pages/agradecimiento";
     }
-    @GetMapping ("/inicio")
-    public String mostrarInicio() {
-        return "/pages/inicio";
-    }
+
 }

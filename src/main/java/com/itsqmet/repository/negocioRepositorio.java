@@ -12,8 +12,7 @@ import java.util.Optional;
 @Repository
 public interface negocioRepositorio extends JpaRepository <Negocio, Long> {
     List <Negocio> findByTipoNegocioContainingIgnoreCase(String nombreNegocio);
-    Optional <Negocio> findByEmailProfesional(String emailProfesional);
-    Page<Negocio> findByNombreNegocioContainingIgnoreCaseOrEmailProfesionalContainingIgnoreCase(String nombreNegocio, String emailProfesional, Pageable pageable);
+    Optional <Negocio> findByEmail(String email);
     Optional<Negocio> findByRuc(String ruc);
 
 }

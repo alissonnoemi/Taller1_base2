@@ -1,5 +1,6 @@
 package com.itsqmet.dto;
 
+import com.itsqmet.entity.Rol;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -15,7 +16,7 @@ public class NegocioRegistroDTO {
     private String nombreCompleto;
     @NotBlank(message = "El email profesional es obligatorio")
     @Email(message = "Debe ingresar un email válido")
-    private String emailProfesional;
+    private String email;
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres") // Recomiendo un mínimo de caracteres
     private String password;
@@ -40,34 +41,132 @@ public class NegocioRegistroDTO {
     private String cvv;
 
     private String billingAddress;
+    private Rol rol;
 
-    public Long getIdNegocio() { return idNegocio; }
-    public void setIdNegocio(Long idNegocio) { this.idNegocio = idNegocio; }
-    public String getNombreCompleto() { return nombreCompleto; }
-    public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
-    public String getEmailProfesional() { return emailProfesional; }
-    public void setEmailProfesional(String emailProfesional) { this.emailProfesional = emailProfesional; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public String getNombreNegocio() { return nombreNegocio; }
-    public void setNombreNegocio(String nombreNegocio) { this.nombreNegocio = nombreNegocio; }
-    public String getTipoNegocio() { return tipoNegocio; }
-    public void setTipoNegocio(String tipoNegocio) { this.tipoNegocio = tipoNegocio; }
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
-    public String getRuc() { return ruc; }
-    public void setRuc(String ruc) { this.ruc = ruc; }
-    public String getPlan() { return plan; }
-    public void setPlan(String plan) { this.plan = plan; }
-    public String getCardNumber() { return cardNumber; }
-    public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
-    public String getExpiryDate() { return expiryDate; }
-    public void setExpiryDate(String expiryDate) { this.expiryDate = expiryDate; }
-    public String getCvv() { return cvv; }
-    public void setCvv(String cvv) { this.cvv = cvv; }
-    public String getBillingAddress() { return billingAddress; }
-    public void setBillingAddress(String billingAddress) { this.billingAddress = billingAddress; }
+    public Rol getRol() {
+        return rol;
+    }
 
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+    public Long getIdNegocio() {
+        return idNegocio;
+    }
+
+    public void setIdNegocio(Long idNegocio) {
+        this.idNegocio = idNegocio;
+    }
+
+    public String getNombreCompleto() {
+        return nombreCompleto;
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getNombreNegocio() {
+        return nombreNegocio;
+    }
+
+    public void setNombreNegocio(String nombreNegocio) {
+        this.nombreNegocio = nombreNegocio;
+    }
+
+    public String getTipoNegocio() {
+        return tipoNegocio;
+    }
+
+    public void setTipoNegocio(String tipoNegocio) {
+        this.tipoNegocio = tipoNegocio;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getRuc() {
+        return ruc;
+    }
+
+    public void setRuc(String ruc) {
+        this.ruc = ruc;
+    }
+
+    public String getPlan() {
+        return plan;
+    }
+
+    public void setPlan(String plan) {
+        this.plan = plan;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(String expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public String getCvv() {
+        return cvv;
+    }
+
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
+    }
+
+    public String getBillingAddress() {
+        return billingAddress;
+    }
+
+    public void setBillingAddress(String billingAddress) {
+        this.billingAddress = billingAddress;
+    }
+    private String fechaHoraInicio;
+    private String fechaHoraFin;
+
+    public String getFechaHoraInicio() { return fechaHoraInicio; }
+    public void setFechaHoraInicio(String fechaHoraInicio) { this.fechaHoraInicio = fechaHoraInicio; }
+
+    public String getFechaHoraFin() { return fechaHoraFin; }
+    public void setFechaHoraFin(String fechaHoraFin) { this.fechaHoraFin = fechaHoraFin; }
 }

@@ -13,23 +13,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface citasRepositorio extends JpaRepository <Citas, Long> {
-    List<Citas> findByCliente(Cliente cliente);
-    List<Citas> findByProfesionalOrderByFechaHoraInicioAsc(Profesional profesional);
+public interface citasRepositorio extends JpaRepository<Citas, Long> {
 
-    @Query("SELECT c FROM Citas c WHERE LOWER(c.profesional.nombreCompleto) LIKE LOWER(CONCAT('%', :nombreProfesional, '%')) ORDER BY c.fechaHoraInicio ASC")
-    List<Citas> findByProfesionalNombreCompletoContainingIgnoreCase(@Param("nombreProfesional") String nombreProfesional);
+    List<Citas> findByClienteOrderByFechaHoraInicioAsc(Cliente cliente);
+
+    List<Citas> findByProfesionalOrderByFechaHoraInicioAsc(Profesional profesional);
 
     List<Citas> findByProfesional_NegocioOrderByFechaHoraInicioAsc(Negocio negocio);
 
-    // *** Método para encontrar citas que se superpongan (para nuevas citas) ***
+    // Conflictos para nueva cita
     @Query("SELECT c FROM Citas c WHERE c.profesional = :profesional " +
             "AND c.fechaHoraInicio <= :finCitaNueva AND c.fechaHoraFin >= :inicioCitaNueva")
     List<Citas> findConflictingAppointments(@Param("profesional") Profesional profesional,
                                             @Param("inicioCitaNueva") LocalDateTime inicioCitaNueva,
                                             @Param("finCitaNueva") LocalDateTime finCitaNueva);
 
-    // *** Método para encontrar citas que se superpongan (excluyendo la propia, para actualizaciones) ***
+    // Conflictos para actualizar cita (excluye la propia)
     @Query("SELECT c FROM Citas c WHERE c.profesional = :profesional " +
             "AND c.idCita != :idCitaActual " +
             "AND c.fechaHoraInicio <= :finCitaNueva AND c.fechaHoraFin >= :inicioCitaNueva")

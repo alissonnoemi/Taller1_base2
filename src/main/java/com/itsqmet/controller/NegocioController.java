@@ -3,10 +3,7 @@ package com.itsqmet.controller;
 import com.itsqmet.dto.NegocioRegistroDTO;
 import com.itsqmet.entity.Negocio;
 import com.itsqmet.entity.Profesional;
-import com.itsqmet.service.CitasServicio;
-import com.itsqmet.service.NegocioServicio;
-import com.itsqmet.service.ProfesionalServicio;
-import com.itsqmet.service.ServicioServicio;
+import com.itsqmet.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,20 +26,16 @@ public class NegocioController {
     private ProfesionalServicio profesionalServicio;
     @Autowired
     private ServicioServicio servicioServicio;
-    @GetMapping("/inicioProfesionales")
-    public String mostrarLoginNegocio(Model model) {
-        model.addAttribute("negocio", new Negocio());
-        return "pages/inicioProfesionales";
-    }
-
+    @Autowired
+    private RolServicio rolServicio;
     @GetMapping("/registroNegocio")
     public String mostrarFormularioNuevoNegocio(Model model) {
         if (!model.containsAttribute("negocioDto")) {
             model.addAttribute("negocioDto", new NegocioRegistroDTO());
         }
+        model.addAttribute("roles", rolServicio.mostrarRol());
         return "pages/registroNegocio";
     }
-
     //Listar todos los negocios
     @GetMapping("/negocios")
     public String listarNegocios(@RequestParam(name = "buscarNegocio", required = false, defaultValue = "") String buscarNegocio,
@@ -82,10 +75,10 @@ public class NegocioController {
             }
         }
         // Validar email solo si es de otro negocio
-        if (negocioServicio.isEmailAlreadyRegistered(negocioDto.getEmailProfesional())) {
-            Optional<Negocio> existente = negocioServicio.obtenerNegocioPorEmail(negocioDto.getEmailProfesional());
+        if (negocioServicio.isEmailAlreadyRegistered(negocioDto.getEmail())) {
+            Optional<Negocio> existente = negocioServicio.obtenerNegocioPorEmail(negocioDto.getEmail());
             if (existente.isEmpty() || !existente.get().getIdNegocio().equals(negocioDto.getIdNegocio())) {
-                result.addError(new FieldError("negocioDto", "emailProfesional", negocioDto.getEmailProfesional(), false, null, null, "Este email profesional ya está en uso."));
+                result.addError(new FieldError("negocioDto", "emailProfesional", negocioDto.getEmail(), false, null, null, "Este email profesional ya está en uso."));
                 model.addAttribute("mensajeTipo", "error");
                 model.addAttribute("mensajeCuerpo", "Este email profesional ya está en uso.");
                 model.addAttribute("negocioDto", negocioDto);
@@ -123,7 +116,7 @@ public class NegocioController {
             }
             // Mapeo de DTO a Entidad
             negocio.setNombreCompleto(negocioDto.getNombreCompleto());
-            negocio.setEmailProfesional(negocioDto.getEmailProfesional());
+            negocio.setEmail(negocioDto.getEmail());
             negocio.setPassword(negocioDto.getPassword());
             negocio.setNombreNegocio(negocioDto.getNombreNegocio());
             negocio.setTipoNegocio(negocioDto.getTipoNegocio());
@@ -159,7 +152,7 @@ public class NegocioController {
             NegocioRegistroDTO negocioDto = new NegocioRegistroDTO();
             negocioDto.setIdNegocio(negocio.getIdNegocio());
             negocioDto.setNombreCompleto(negocio.getNombreCompleto());
-            negocioDto.setEmailProfesional(negocio.getEmailProfesional());
+            negocioDto.setEmail(negocio.getEmail());
             negocioDto.setNombreNegocio(negocio.getNombreNegocio());
             negocioDto.setTipoNegocio(negocio.getTipoNegocio());
             negocioDto.setDireccion(negocio.getDireccion());

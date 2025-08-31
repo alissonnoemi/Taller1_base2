@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<nav class="bg-white border-b border-gray-200 px-4 py-3 sm:px-6">
+    <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+        <a href="#" class="flex items-center">
+            <span class="self-center text-2xl font-semibold whitespace-nowrap text-blue-700">AgendaPro Admin</span>
+        </a>
+        <div class="flex items-center">
+            <button class="text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-10">Panel de Administrador</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                Gestión de Usuarios
+            </h2>
+            <div class="flex flex-col gap-3">
+                <a th:href="@{/listaClientes}" class="inline-flex items-center justify-center px-5 py-2.5 text-base font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition duration-200">
+                    Clientes
+                </a>
+                <a th:href="@{/negocios}" class="inline-flex items-center justify-center px-5 py-2.5 text-base font-medium text-center text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition duration-200">
+                    Negocios
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                Gestión de Negocios
+            </h2>
+            <div class="flex flex-col gap-3">
+                <a th:href="@{/listaProfesionales}" class="inline-flex items-center justify-center px-5 py-2.5 text-base font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 transition duration-200">
+                    Profesionales
+                </a>
+                <a th:href="@{/listaServicios}" class="inline-flex items-center justify-center px-5 py-2.5 text-base font-medium text-center text-white bg-teal-600 rounded-lg hover:bg-teal-700 focus:ring-4 focus:ring-teal-300 transition duration-200">
+                    Servicios
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                Gestión de Citas
+            </h2>
+            <div class="flex flex-col gap-3">
+                <a th:href="@{/cita}" class="inline-flex items-center justify-center px-5 py-2.5 text-base font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition duration-200">
+                    Citas
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                Reportes y Otros
+            </h2>
+            <div class="flex flex-col gap-3">
+                <a th:href="@{/historialCitasNegocio}" class="inline-flex items-center justify-center px-5 py-2.5 text-base font-medium text-center text-white bg-orange-600 rounded-lg hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 transition duration-200">
+                    Historiales Citas por Negocio
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                Configuración
+            </h2>
+            <div class="flex flex-col gap-3">
+                <button data-modal-target="info-modal" data-modal-toggle="info-modal" class="inline-flex items-center justify-center px-5 py-2.5 text-base font-medium text-center text-white bg-gray-600 rounded-lg hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 transition duration-200">
+                    Información del Sistema
+                </button>
+            </div>
+        </div>
+
+    </div> </div> <div id="info-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Información del Sistema
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="info-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Cerrar modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                    Esta es una ventana de información para el administrador. Aquí puedes mostrar detalles del sistema, versiones, avisos importantes, etc.
+                </p>
+                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                    Desarrollado por AgendaPro - Versión 1.0
+                </p>
+            </div>
+            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <button data-modal-hide="info-modal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

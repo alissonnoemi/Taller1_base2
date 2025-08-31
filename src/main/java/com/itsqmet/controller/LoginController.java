@@ -1,63 +1,26 @@
 package com.itsqmet.controller;
-
-import com.itsqmet.entity.*;
-import com.itsqmet.service.ClienteServicio;
-import com.itsqmet.service.NegocioServicio;
-import com.itsqmet.service.ProfesionalServicio;
-import com.itsqmet.service.ServicioServicio;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class LoginController {
-    @Autowired
-    private ClienteServicio clienteServicio;
-    @Autowired
-    private ProfesionalServicio profesionalServicio;
-    @Autowired
-    private ServicioServicio servicioServicio;
-    @Autowired
-    private NegocioServicio negocioServicio;
-    @PostMapping("/login")
-    public String procesarLogin(@ModelAttribute Cliente cliente, Model model) {
-        boolean autenticado = clienteServicio.validarCredenciales(cliente.getEmail(), cliente.getPassword());
-        if (autenticado) {
-            Cliente clienteAutenticado = clienteServicio.obtenerClientePorEmail(cliente.getEmail()).orElse(null);
-            if (clienteAutenticado != null) {
-
-                Citas nuevaCita = new Citas();
-                nuevaCita.setCliente(clienteAutenticado);
-
-                nuevaCita.setServicio(new Servicio());
-                nuevaCita.setProfesional(new Profesional());
-
-                model.addAttribute("cita", nuevaCita);
-                model.addAttribute("clientes", clienteServicio.obtenerTodosLosClientes());
-                model.addAttribute("profesionales", profesionalServicio.obtenerTodosLosProfesionales());
-                model.addAttribute("servicios", servicioServicio.obtenerTodosLosServicios());
-                return "pages/cita";
-            } else {
-                model.addAttribute("mensajeError", "Error al obtener datos del cliente autenticado.");
-                return "pages/inicioClientes";
-            }
-        } else {
-            model.addAttribute("mensajeError", "Correo electrónico o contraseña incorrectos.");
-            return "pages/inicioClientes";
-        }
+    @GetMapping("/login")
+    public String mostrarInicio() {
+        return "/pages/inicio";
     }
-    @PostMapping("/loginNegocio")
-    public String loginNegocio(Negocio negocio, Model model) {
-        Optional<Negocio> registrado = negocioServicio.findByEmail(negocio.getEmailProfesional());
-        if (registrado.isPresent() && registrado.get().getPassword().equals(negocio.getPassword())) {
-            return "redirect:/agradecimiento";
-        } else {
-            model.addAttribute("error", "Credenciales incorrectas");
-            return "pages/inicioProfesionales";
+    @RequestMapping(value = "/postLogin", method = {RequestMethod.GET, RequestMethod.POST})
+    public String postLogin(Authentication authentication) {
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CLIENTE"))) {
+            return "redirect:/agendar";
+        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return "redirect:/admin";
+        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_NEGOCIO"))) {
+            return "redirect:/negocios";
         }
+        return "redirect:/";
     }
 }

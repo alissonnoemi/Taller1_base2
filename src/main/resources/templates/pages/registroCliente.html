@@ -93,7 +93,16 @@
         </div>
         <p th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}" class="text-red-500 text-xs italic mt-1"></p>
       </div>
-
+      <div class="block text-gray-700 text-sm font-semibold mb-2">
+        <label for="rol" class="form-label">Rol</label>
+        <select id="rol" th:field="*{rol.id}">
+          <option th:each="rol:${roles}"
+                  th:value="${rol.id}"
+                  th:text="${rol.nombre}">
+            Seleccione Rol
+          </option>
+        </select>
+      </div>
       <div>
         <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
         <div class="mt-1">

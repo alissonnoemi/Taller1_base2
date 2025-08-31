@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +16,8 @@ import java.util.Optional;
 
 @Service
 public class NegocioServicio {
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private negocioRepositorio negocioRepositorio;
     @Autowired
@@ -26,26 +28,23 @@ public class NegocioServicio {
     public Optional<Negocio> obtenerNegocioPorId(Long id) {
         return negocioRepositorio.findById(id);
     }
-    public  Optional<Negocio> obtenerNegocioPorEmail(String emailProfesional) {
-        return negocioRepositorio.findByEmailProfesional(emailProfesional);
+    public  Optional<Negocio> obtenerNegocioPorEmail(String email) {
+        return negocioRepositorio.findByEmail(email);
     }
     public Optional<Negocio> obtenerNegocioPorRuc(String ruc) {
         return negocioRepositorio.findByRuc(ruc);
     }
     @Transactional
     public Negocio guardarNegocio(Negocio negocio) {
+        String passwordEncriptado=passwordEncoder.encode(negocio.getPassword());
+        //añado el encriptado al objeto
+        negocio.setPassword(passwordEncriptado);
         return negocioRepositorio.save(negocio);
     }
-    public Optional<Negocio> findByEmail(String emailProfesional) {
-        return negocioRepositorio.findByEmailProfesional(emailProfesional);
+    public Optional<Negocio> findByEmail(String email) {
+        return negocioRepositorio.findByEmail(email);
     }
-    public boolean validarCredenciales(String emailProfesional, String password) {
-        List<Negocio> negocios = negocioRepositorio.findByTipoNegocioContainingIgnoreCase(emailProfesional);
-        if (negocios.isEmpty()) return false;
-        Negocio negocio = negocios.get(0);
-        // Asegúrate de tener el campo password en la entidad Negocio
-        return negocio.getPassword() != null && negocio.getPassword().equals(password);
-    }
+
     @Transactional
     public Negocio editarNegocio(Long id, Negocio negocioActualizado) {
         Negocio negocioExistente = negocioRepositorio.findById(id)
@@ -55,11 +54,11 @@ public class NegocioServicio {
         negocioExistente.setDireccion(negocioActualizado.getDireccion());
         negocioExistente.setTelefono(negocioActualizado.getTelefono());
         negocioExistente.setTipoNegocio(negocioActualizado.getTipoNegocio());
-        if (!negocioExistente.getEmailProfesional().equals(negocioActualizado.getEmailProfesional())) {
-            if (isEmailAlreadyRegistered(negocioActualizado.getEmailProfesional())) {
+        if (!negocioExistente.getEmail().equals(negocioActualizado.getEmail())) {
+            if (isEmailAlreadyRegistered(negocioActualizado.getEmail())) {
                 throw new IllegalArgumentException("El nuevo email profesional ya está registrado por otro negocio.");
             }
-            negocioExistente.setEmailProfesional(negocioActualizado.getEmailProfesional());
+            negocioExistente.setEmail(negocioActualizado.getEmail());
         }
         if (!negocioExistente.getRuc().equals(negocioActualizado.getRuc())) {
             if (isRucAlreadyRegistered(negocioActualizado.getRuc())) {
@@ -77,8 +76,8 @@ public class NegocioServicio {
     public boolean isRucAlreadyRegistered(String ruc) {
         return negocioRepositorio.findByRuc(ruc).isPresent();
     }
-    public boolean isEmailAlreadyRegistered(String emailProfesional) {
-        return negocioRepositorio.findByEmailProfesional(emailProfesional).isPresent();
+    public boolean isEmailAlreadyRegistered(String email) {
+        return negocioRepositorio.findByEmail(email).isPresent();
     }
     public String validarRucParaRegistro(String ruc) {
         // Validación básica de longitud y formato (ya cubierto por @Pattern en DTO, pero lo reforzamos)
