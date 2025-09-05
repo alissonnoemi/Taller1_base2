@@ -10,37 +10,56 @@
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/salonesBelleza.css}">
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 flex flex-col">
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col font-sora">
+
 <div th:replace="~{fragments/navbar :: navbar}"></div>
+
 <main class="flex flex-1 items-center justify-center py-16">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-10 border border-gray-200">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">LOGIN DE USUARIOS</h1>
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10 border border-gray-100 animate__animated animate__fadeInUp">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Iniciar Sesión</h1>
+
+        <!-- Mensaje de registro exitoso -->
+        <div th:if="${mensajeTipo == 'success'}" class="animate__animated animate__fadeInDown mb-4 p-3 text-center text-green-800 bg-green-100 border border-green-200 rounded-xl shadow-md">
+            <p th:text="${mensajeCuerpo}">Cliente registrado exitosamente!</p>
+        </div>
+
         <!-- Mensaje de sesión cerrada -->
-        <div th:if="${param.logout}" class="animate__animated animate__fadeInDown mb-4 p-3 text-center text-green-700 bg-green-100 border border-green-300 rounded-lg shadow">
+        <div th:if="${param.logout}" class="animate__animated animate__fadeInDown mb-4 p-3 text-center text-green-800 bg-green-100 border border-green-200 rounded-xl shadow-md">
             <p>¡Has cerrado sesión exitosamente!</p>
         </div>
+
         <!-- Mensaje de error de credenciales -->
-        <div th:if="${param.error}" class="animate__animated animate__shakeX mb-4 p-3 text-center text-red-700 bg-red-100 border border-red-300 rounded-lg shadow">
+        <div th:if="${param.error}" class="animate__animated animate__shakeX mb-4 p-3 text-center text-red-800 bg-red-100 border border-red-200 rounded-xl shadow-md">
             <p>Credenciales no válidas. Intenta nuevamente.</p>
         </div>
-        <form th:action="@{/login}" method="post" class="space-y-6">
+
+        <form th:action="@{/login}" method="post" class="space-y-5">
             <div>
-                <label for="username" class="block text-sm font-semibold text-gray-700 mb-1">Usuario:</label>
-                <input type="text" id="username" name="username" placeholder="username" required
-                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
+                <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required
+                       class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-200">
             </div>
+
             <div>
-                <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Password:</label>
-                <input type="password" id="password" name="password" required
-                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required
+                       class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-200">
             </div>
+
             <button type="submit"
-                    class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow">
+                    class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg">
                 Iniciar sesión
             </button>
         </form>
+        <div class="mt-6 text-center text-gray-600">
+            <span>¿No tienes cuenta?
+                <a th:href="@{/registroCliente}" class="font-semibold text-blue-600 hover:text-blue-500 underline">Regístrate aquí</a>
+            </span>
+        </div>
     </div>
 </main>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
+
 </body>
 </html>

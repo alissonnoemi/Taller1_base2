@@ -53,7 +53,7 @@ public class ClienteController {
             clienteServicio.guardarCliente(cliente);
             redirectAttributes.addFlashAttribute("mensajeTipo", "success");
             redirectAttributes.addFlashAttribute("mensajeCuerpo", "Cliente registrado exitosamente! Ya puedes iniciar sesión.");
-            return "redirect:/inicioClientes";
+            return "redirect:/login";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("mensajeTipo", "error");
             redirectAttributes.addFlashAttribute("mensajeCuerpo", e.getMessage());
