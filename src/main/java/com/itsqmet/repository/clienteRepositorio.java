@@ -14,4 +14,5 @@ public interface clienteRepositorio extends JpaRepository<Cliente, Long> {
 
    Optional<Cliente> findByEmail(String email);
    List<Cliente> findByNombreCompletoContainingIgnoreCase(String nombreCompleto);
+
 }

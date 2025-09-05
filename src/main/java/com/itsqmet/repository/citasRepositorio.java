@@ -20,6 +20,7 @@ public interface citasRepositorio extends JpaRepository<Citas, Long> {
     List<Citas> findByProfesionalOrderByFechaHoraInicioAsc(Profesional profesional);
 
     List<Citas> findByProfesional_NegocioOrderByFechaHoraInicioAsc(Negocio negocio);
+        List<Citas> findByClienteId(Long idCliente);
 
     // Conflictos para nueva cita
     @Query("SELECT c FROM Citas c WHERE c.profesional = :profesional " +

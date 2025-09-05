@@ -28,6 +28,9 @@ public class ClienteServicio {
 
         return clienteRepositorio.save(cliente);
     }
+    public Optional<Cliente> buscarPorEmail(String email){
+        return clienteRepositorio.findByEmail(email);
+    }
 
     public Optional<Cliente> obtenerClientePorId(Long id) {
         return clienteRepositorio.findById(id);

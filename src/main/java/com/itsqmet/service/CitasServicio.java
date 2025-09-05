@@ -63,7 +63,9 @@ public class CitasServicio {
 
         return citasRepositorio.save(nuevaCita);
     }
-
+    public List<Citas> obtenerCitasPorCliente(Long idCliente) {
+        return citasRepositorio.findByClienteId(idCliente);
+    }
     public List<Citas> obtenerTodosLosCitas() {
         return citasRepositorio.findAll();
     }
@@ -164,6 +166,7 @@ public class CitasServicio {
                 .orElseThrow(() -> new IllegalArgumentException("Negocio no encontrado con ID: " + negocioId));
         return citasRepositorio.findByProfesional_NegocioOrderByFechaHoraInicioAsc(negocio);
     }
+
 
     @Transactional
     public List<Citas> obtenerCitasPorProfesional(Long profesionalId) {
