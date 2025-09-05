@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Nav</title>
@@ -7,145 +8,88 @@
 <body>
 <nav th:fragment="navbar" class="bg-white p-4 shadow-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <!-- Logo -->
         <a href="/" class="flex items-center space-x-2 text-gray-800 text-2xl font-bold tracking-wide">
             <img th:src="@{/imagenes/logo.png}" alt="Logo AgendaPro Connect" class="h-16 w-auto">
             <span>AgendaPro Connect</span>
         </a>
 
+        <!-- Botón menú móvil -->
         <div class="md:hidden">
             <button id="mobile-menu-button" class="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
             </button>
         </div>
 
+        <!-- Menú escritorio -->
         <div class="hidden md:flex space-x-6 items-center">
-
+            <!-- Dropdown Soluciones -->
             <div class="relative group" id="soluciones-dropdown-container">
-                <button class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium focus:outline-none flex items-center group-hover:text-gray-900 transition-colors duration-200" id="soluciones-button">
+                <button class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center group-hover:text-gray-900 transition-colors duration-200" id="soluciones-button">
                     Soluciones
                     <svg class="ml-1 h-5 w-5 transition-transform duration-200 transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
                 </button>
                 <div id="soluciones-dropdown-content" class="absolute hidden group-hover:block left-1/2 -translate-x-1/2 mt-3 w-max bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10 p-6">
-                    <div class="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
-                        <div class="space-y-3">
-                            <h5 class="font-bold text-gray-900">Tipo de Negocio</h5>
-                            <a th:href="@{/salonesBelleza}" class="block text-gray-600 hover:text-indigo-600">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a.75.75 0 01.75.75v8.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2z"></path><path d="M7 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 017 6zM13 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0113 6zM5.75 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5zM14.25 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5z"></path></svg>
-                                    <span>Salones de Belleza</span>
-                                </div>
-                            </a>
-                            <a th:href="@{/clinicas}" class="block text-gray-600 hover:text-indigo-600">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a.75.75 0 01.75.75v8.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2z"></path><path d="M7 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 017 6zM13 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0113 6zM5.75 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5zM14.25 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5z"></path></svg>
-                                    <span>Clínicas y Terapia</span>
-                                </div>
-                            </a>
-                            <a th:href="@{/talleres}"  class="block text-gray-600 hover:text-indigo-600">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a.75.75 0 01.75.75v8.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2z"></path><path d="M7 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 017 6zM13 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0113 6zM5.75 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5zM14.25 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5z"></path></svg>
-                                    <span>Talleres y Servicios</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="space-y-3">
-                            <h5 class="font-bold text-gray-900">Más soluciones</h5>
-                            <a th:href="@{/consultorias}"  class="block text-gray-600 hover:text-indigo-600">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a.75.75 0 01.75.75v8.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2z"></path><path d="M7 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 017 6zM13 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0113 6zM5.75 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5zM14.25 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5z"></path></svg>
-                                    <span>Coaching y Consultoría</span>
-                                </div>
-                            </a>
-                            <a th:href="@{/educacion}"  class="block text-gray-600 hover:text-indigo-600">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a.75.75 0 01.75.75v8.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2z"></path><path d="M7 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 017 6zM13 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0113 6zM5.75 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5zM14.25 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5z"></path></svg>
-                                    <span>Educación y Clases</span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+                    <!-- Enlaces de soluciones -->
                 </div>
             </div>
 
+            <!-- Dropdown Características -->
             <div class="relative group" id="caracteristicas-dropdown-container">
-                <button class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium focus:outline-none flex items-center group-hover:text-gray-900 transition-colors duration-200" id="caracteristicas-button">
+                <button class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center group-hover:text-gray-900 transition-colors duration-200" id="caracteristicas-button">
                     Características
                     <svg class="ml-1 h-5 w-5 transition-transform duration-200 transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
                 </button>
                 <div id="caracteristicas-dropdown-content" class="absolute hidden group-hover:block left-1/2 -translate-x-1/2 mt-3 w-max bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10 p-6">
-                    <div class="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
-                        <div class="space-y-3">
-                            <h5 class="font-bold text-gray-900">Gestión</h5>
-                            <a th:href="@{/gestionPersonal}" class="block text-gray-600 hover:text-indigo-600">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a.75.75 0 01.75.75v8.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2z"></path><path d="M7 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 017 6zM13 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0113 6zM5.75 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5zM14.25 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5z"></path></svg>
-                                    <span>Gestión de Personal</span>
-                                </div>
-                            </a>
-                            <a th:href="@{/agendamiento}" class="block text-gray-600 hover:text-indigo-600">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a.75.75 0 01.75.75v8.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2z"></path><path d="M7 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 017 6zM13 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0113 6zM5.75 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5zM14.25 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5z"></path></svg>
-                                    <span>Agendamiento Online</span>
-                                </div>
-                            </a>
-                            <a th:href="@{/control}" class="block text-gray-600 hover:text-indigo-600">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a.75.75 0 01.75.75v8.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2z"></path><path d="M7 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 017 6zM13 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0113 6zM5.75 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5zM14.25 16.5a.75.75 0 001.5 0v-3.5a.75.75 0 00-1.5 0v3.5z"></path></svg>
-                                    <span>Control de Clientes</span>
-                                </div>
-                            </a>
-                        </div>
-                        </div>
-                    </div>
+                    <!-- Enlaces de características -->
                 </div>
             </div>
 
             <a th:href="@{/precios}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Precios</a>
             <a th:href="@{/contacto}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Contacto</a>
 
-            <a th:href="@{/login}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Iniciar Sesión</a>
-            <a th:href="@{/registroNegocio}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors duration-200 shadow-md">Comenzar</a>
+            <!-- Autenticación -->
+            <div sec:authorize="isAuthenticated()" class="flex items-center space-x-2">
+                <svg class="h-6 w-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 2a4 4 0 100 8 4 4 0 000-8zm-6 14a6 6 0 1112 0H4z" clip-rule="evenodd"/>
+                </svg>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition-colors duration-200 shadow-md">
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Iniciar Sesión</a>
+                <a th:href="@{/registroNegocio}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors duration-200 shadow-md">Comenzar</a>
+            </div>
         </div>
     </div>
+
+    <!-- Menú móvil -->
     <div id="mobile-menu" class="hidden md:hidden mt-4 px-2 space-y-2">
-        <a href="/" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Inicio</a>
-
-        <button class="w-full text-left text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium flex justify-between items-center" id="mobile-soluciones-button">
-            <span>Soluciones</span>
-            <svg class="h-5 w-5 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-        </button>
-        <div id="mobile-soluciones-content" class="hidden px-4 py-2 bg-gray-50 rounded-md space-y-1">
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Salones de Belleza</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Clínicas y Terapia</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Talleres y Servicios</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Coaching y Consultoría</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Educación y Clases</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1 mt-2 font-bold">Ver todas las soluciones →</a>
+        <div sec:authorize="isAuthenticated()">
+            <div class="flex items-center space-x-2 mb-2">
+                <svg class="h-6 w-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 2a4 4 0 100 8 4 4 0 000-8zm-6 14a6 6 0 1112 0H4z" clip-rule="evenodd"/>
+                </svg>
+                <form th:action="@{/logout}" method="post" class="w-full">
+                    <button type="submit" class="w-full bg-red-600 text-white text-center px-3 py-2 rounded-md text-base font-medium hover:bg-red-700 transition-colors duration-200">
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </div>
         </div>
-
-        <button class="w-full text-left text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium flex justify-between items-center mt-1" id="mobile-caracteristicas-button">
-            <span>Características</span>
-            <svg class="h-5 w-5 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-        </button>
-        <div id="mobile-caracteristicas-content" class="hidden px-4 py-2 bg-gray-50 rounded-md space-y-1">
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Gestión de Personal</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Agendamiento Online</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Control de Clientes</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Recordatorios Automáticos</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1">Gestión de Pagos</a>
-            <a href="#" class="block text-gray-600 hover:text-indigo-600 text-sm py-1 mt-2 font-bold">Ver todas las funciones →</a>
+        <div sec:authorize="isAnonymous()">
+            <a href="/login" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Iniciar Sesión</a>
+            <a href="/registroNegocio" class="block bg-indigo-600 text-white text-center px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">Comenzar</a>
         </div>
-
-        <a href="/precios" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium mt-1">Precios</a>
-        <a href="/contacto" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium mt-1">Contacto</a>
-        <a href="/login" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium mt-1">Iniciar Sesión</a>
-        <a href="/registro" class="block bg-indigo-600 text-white text-center px-3 py-2 rounded-md text-base font-medium mt-3 hover:bg-indigo-700">Comenzar</a>
     </div>
 </nav>
 
@@ -157,63 +101,40 @@
             const container = containerId ? document.getElementById(containerId) : null;
             let openedByClick = false;
 
-            // Mostrar al pasar el mouse (desktop)
             if (container) {
                 container.addEventListener('mouseenter', () => {
-                    if (window.innerWidth >= 768) {
-                        content.classList.remove('hidden');
-                    }
+                    if (window.innerWidth >= 768) content.classList.remove('hidden');
                 });
                 container.addEventListener('mouseleave', () => {
-                    if (window.innerWidth >= 768 && !openedByClick) {
-                        content.classList.add('hidden');
-                    }
+                    if (window.innerWidth >= 768 && !openedByClick) content.classList.add('hidden');
                 });
             }
 
-            // Mostrar/ocultar al hacer clic
             if (button && content) {
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if (content.classList.contains('hidden')) {
-                        content.classList.remove('hidden');
-                        openedByClick = true;
-                    } else {
-                        content.classList.add('hidden');
-                        openedByClick = false;
-                    }
-                    // Rotar flecha
+                    content.classList.toggle('hidden');
+                    openedByClick = !openedByClick;
                     const arrowIcon = button.querySelector('svg');
-                    if (arrowIcon) {
-                        arrowIcon.classList.toggle('rotate-180');
-                    }
+                    if (arrowIcon) arrowIcon.classList.toggle('rotate-180');
                 });
             }
 
-            // Cerrar al hacer clic fuera
             document.addEventListener('click', (e) => {
-                if (content && !content.classList.contains('hidden')) {
-                    if (!content.contains(e.target) && (!button || !button.contains(e.target))) {
-                        content.classList.add('hidden');
-                        openedByClick = false;
-                        // Quitar rotación de flecha
-                        if (button) {
-                            const arrowIcon = button.querySelector('svg');
-                            if (arrowIcon) {
-                                arrowIcon.classList.remove('rotate-180');
-                            }
-                        }
+                if (content && !content.classList.contains('hidden') && (!content.contains(e.target) && (!button || !button.contains(e.target)))) {
+                    content.classList.add('hidden');
+                    openedByClick = false;
+                    if (button) {
+                        const arrowIcon = button.querySelector('svg');
+                        if (arrowIcon) arrowIcon.classList.remove('rotate-180');
                     }
                 }
             });
         }
 
         setupDropdown('soluciones-button', 'soluciones-dropdown-content', 'soluciones-dropdown-container');
-        setupDropdown('mobile-soluciones-button', 'mobile-soluciones-content', null);
         setupDropdown('caracteristicas-button', 'caracteristicas-dropdown-content', 'caracteristicas-dropdown-container');
-        setupDropdown('mobile-caracteristicas-button', 'mobile-caracteristicas-content', null);
 
-        // Menú móvil
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenuButton && mobileMenu) {
