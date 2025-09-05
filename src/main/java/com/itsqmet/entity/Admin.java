@@ -13,6 +13,10 @@ public class Admin {
     @JoinColumn(name = "rol_id")
     private Rol rol;
 
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
     public Rol getRol() {
         return rol;
     }

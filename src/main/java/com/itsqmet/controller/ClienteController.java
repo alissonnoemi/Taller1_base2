@@ -1,10 +1,14 @@
 package com.itsqmet.controller;
 
-import com.itsqmet.entity.*;
+import com.itsqmet.entity.Admin;
+import com.itsqmet.entity.Cliente;
+import com.itsqmet.entity.Rol;
 import com.itsqmet.service.ClienteServicio;
 import com.itsqmet.service.ProfesionalServicio;
 import com.itsqmet.service.RolServicio;
 import com.itsqmet.service.ServicioServicio;
+import com.itsqmet.repository.AdminRepositorio;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,46 +22,70 @@ import java.util.Optional;
 
 @Controller
 public class ClienteController {
+
     @Autowired
     private ClienteServicio clienteServicio;
+
     @Autowired
     private ProfesionalServicio profesionalServicio;
+
     @Autowired
     private ServicioServicio servicioServicio;
+
     @Autowired
     private RolServicio rolServicio;
+
+    @Autowired
+    private AdminRepositorio adminRepositorio;
+
+    // ---------------- LISTAR CLIENTES ----------------
     @GetMapping("/listaClientes")
     public String listaClientes(Model model) {
         model.addAttribute("clientes", clienteServicio.obtenerTodosLosClientes());
         return "pages/listaClientes";
     }
 
+    // ---------------- REGISTRO CLIENTE ----------------
     @GetMapping("/registroCliente")
     public String mostrarFormularioRegistroCliente(Model model) {
         List<Rol> roles = rolServicio.mostrarRol();
-        System.out.println("Roles encontrados: " + roles); // Verifica que no esté vacío
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("roles", roles);
         return "pages/registroCliente";
     }
+
     @PostMapping("/registroCliente")
     public String registrarCliente(@Valid @ModelAttribute("cliente") Cliente cliente,
                                    BindingResult result,
                                    RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-
             return "pages/registroCliente";
         }
-        try {
 
+        try {
+            // 🔹 Resolver objeto Rol completo
+            if (cliente.getRol() != null && cliente.getRol().getId() != null) {
+                Rol rol = rolServicio.obtenerRolPorId(cliente.getRol().getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Rol inválido"));
+                cliente.setRol(rol);
+            }
+
+            // 🔹 Guardar cliente
             clienteServicio.guardarCliente(cliente);
+
+            // 🔹 Crear Admin si el rol es ADMIN
+            if (cliente.getRol() != null && "ADMIN".equalsIgnoreCase(cliente.getRol().getNombre())) {
+                Admin admin = new Admin();
+                admin.setEmail(cliente.getEmail());
+                admin.setPassword(cliente.getPassword()); // ya encriptada
+                admin.setRol(cliente.getRol());
+                adminRepositorio.save(admin);
+            }
+
             redirectAttributes.addFlashAttribute("mensajeTipo", "success");
-            redirectAttributes.addFlashAttribute("mensajeCuerpo", "Cliente registrado exitosamente! Ya puedes iniciar sesión.");
+            redirectAttributes.addFlashAttribute("mensajeCuerpo", "Cliente registrado exitosamente!");
             return "redirect:/login";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("mensajeTipo", "error");
-            redirectAttributes.addFlashAttribute("mensajeCuerpo", e.getMessage());
-            return "pages/registroCliente";
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensajeTipo", "error");
             redirectAttributes.addFlashAttribute("mensajeCuerpo", "Error al registrar el cliente: " + e.getMessage());
@@ -65,10 +93,13 @@ public class ClienteController {
         }
     }
 
+    // ---------------- EDITAR CLIENTE ----------------
     @GetMapping("/editarCliente/{id}")
     public String mostrarFormularioEditarCliente(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Cliente> clienteOptional = clienteServicio.obtenerClientePorId(id);
         if (clienteOptional.isPresent()) {
+            List<Rol> roles = rolServicio.mostrarRol();
+            model.addAttribute("roles", roles);
             model.addAttribute("cliente", clienteOptional.get());
             return "pages/registroCliente";
         } else {
@@ -84,24 +115,28 @@ public class ClienteController {
                                     BindingResult result,
                                     RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-
             return "pages/registroCliente";
         }
+
         try {
+            // 🔹 Resolver rol completo antes de actualizar
+            if (cliente.getRol() != null && cliente.getRol().getId() != null) {
+                Rol rol = rolServicio.obtenerRolPorId(cliente.getRol().getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Rol inválido"));
+                cliente.setRol(rol);
+            }
 
             cliente.setId(id);
-            clienteServicio.guardarCliente(cliente); // El servicio detectará el ID y actualizará
+            clienteServicio.guardarCliente(cliente); // actualizar cliente
+
             redirectAttributes.addFlashAttribute("mensajeTipo", "success");
             redirectAttributes.addFlashAttribute("mensajeCuerpo", "Cliente actualizado exitosamente!");
-            return "redirect:/listaClientes"; // Redirige a la lista de clientes después de una actualización exitosa
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("mensajeTipo", "error");
-            redirectAttributes.addFlashAttribute("mensajeCuerpo", e.getMessage());
-            return "pages/registroCliente"; // Vuelve al formulario con el mensaje de error
+            return "redirect:/listaClientes";
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensajeTipo", "error");
             redirectAttributes.addFlashAttribute("mensajeCuerpo", "Error al actualizar el cliente: " + e.getMessage());
-            return "pages/registroCliente"; // Vuelve al formulario con el mensaje de error
+            return "pages/registroCliente";
         }
     }
 
@@ -111,12 +146,9 @@ public class ClienteController {
             clienteServicio.eliminarCliente(id);
             redirectAttributes.addFlashAttribute("mensajeTipo", "success");
             redirectAttributes.addFlashAttribute("mensajeCuerpo", "Cliente eliminado exitosamente!");
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("mensajeTipo", "error");
-            redirectAttributes.addFlashAttribute("mensajeCuerpo", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensajeTipo", "error");
-            redirectAttributes.addFlashAttribute("mensajeCuerpo", "Error al eliminar el cliente.");
+            redirectAttributes.addFlashAttribute("mensajeCuerpo", "Error al eliminar el cliente: " + e.getMessage());
         }
         return "redirect:/listaClientes";
     }
@@ -126,6 +158,4 @@ public class ClienteController {
         model.addAttribute("cliente", new Cliente());
         return "pages/inicioClientes";
     }
-
-
 }
